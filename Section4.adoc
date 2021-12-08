@@ -53,3 +53,9 @@ decltype((i))) e;  //错误：e是int&，必须初始化
 ----
 
 WARNING: decltype((variable)) (注意是双层括号)的结果永远是引用，而decltype(variable)结果只有variable本身就是一个引用时才是引用。
+
+. Order 1
+. Order 2
+.. Order 2a
+.. Order 2b
+. Order 3
