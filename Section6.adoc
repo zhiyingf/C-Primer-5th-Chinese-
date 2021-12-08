@@ -209,6 +209,7 @@ int main(int argc, char **argv){...}
 argc = 10
 argv[0] = "hole_fixer";
 argv[1] = "-in";
+argv[2] = "bunnyhole.off";
 ... ...
 argv[9] = "2";
 argv[10] = 0;
