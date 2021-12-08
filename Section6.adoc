@@ -203,12 +203,16 @@ int main(int argc, char *argv[]){...}
 //因为第二个形参为数组，故可等价定义为
 int main(int argc, char **argv){...}
 ----
-以上面提供的命令行为例：argc = 10
+
+以上面提供的命令行为例：
+```
+argc = 10
 argv[0] = "hole_fixer";
 argv[1] = "-in";
 ... ...
 argv[9] = "2";
 argv[10] = 0;
+```
 
 在 Visual Studio 中为了能使用这两个参数将信息传入 main 函数，可在 Visual Studio 中设置，设置方式如下：
 
