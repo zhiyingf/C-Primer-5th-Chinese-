@@ -160,5 +160,17 @@ ival = pval = 0;           //错误：指针类型不能转化为int类型，不
 <2> 如果左侧运算对象是内置类型，则初始值列表最多只能包含一个值，且该值即使转化的话其所占空间也不应该大于目标类型的空间；
 <3> 赋值运算满足右结合律
 
+[source,ruby]
+----
+require 'sinatra' <1>
+
+get '/hi' do <2> <3>
+  "Hello World!"
+end
+----
+<1> Library import
+<2> URL mapping
+<3> Response block
+
 
 
