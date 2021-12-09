@@ -226,7 +226,7 @@ argv[10] = 0;
 *initializer_list形参* ： 用于函数的实参数量未知但全部实参类型相同时的情况。
 initializer_list是一种标准库类型，用于表示某种特殊类型的值的数组。
 
-[cols = ".^, .^" , option = "header",]
+[cols = ".^, .^" , options = "header",]
 |===
 2+^.^|表6.1 initializer_list提供的操作
 |initializer_list<T> lst; | 默认初始化；T类型的空列表
