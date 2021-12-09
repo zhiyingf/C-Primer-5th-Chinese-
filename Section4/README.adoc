@@ -93,4 +93,5 @@ cout << i << " "<< ++i <<endl; <2>
 
 # 算术运算符
 表4.1（以及后面章节的运算符表）按照运算符优先级从高到低将其分组。
+
 image::img/tabel4-1.png[alt=tabel, width=500,align=center]
