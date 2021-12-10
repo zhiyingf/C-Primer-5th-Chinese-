@@ -20,7 +20,10 @@ toc::[]
 
 * 第2章 : 变量和基本类型
 * 第3章 : 字符串、向量和数组
-* 第4章 : 表达式  link:CMakeLists.txt[Chapter4/README.adoc]
+* 第4章 : 表达式  
+
+link:CMakeLists.txt[Chapter4/README.adoc]
+
 * 第5章 : 语句
 * 第6章 : 函数  link:笔记aaa[Chapter6/README.adoc]
 * 第7章 : 类
