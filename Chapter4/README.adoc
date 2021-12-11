@@ -63,7 +63,7 @@ decltype(i) d;     //正确：d是一个（未初始化的）int
 decltype((i))) e;  //错误：e是int&，必须初始化
 ----
 
-WARNING: `decltype\((variable))` 的结果永远是引用，而 `decltype(variable)` 结果只有variable本身就是一个引用时才是引用
+WARNING: `decltype\((variable))` 的结果永远是引用，而 `decltype(variable)` 结果只有variable本身就是一个引用时才是引用。
 
 ## 优先级与结合律
 
@@ -85,7 +85,7 @@ cin >> v1 >> v2; //IO相关的运算符满足左结合律
 
 ## 求值顺序
 
-优先级规定了运算对象的组合方式，但没有说明运算对象要按照什么顺序求值。大多数情况下，不会明确指定求值的顺序：
+优先级规定了运算对象的组合方式，但没有说明运算对象要按照什么顺序求值。大多数情况下，不会明确指定求值的顺序:
 [source,c++]
 ----
 int i = f1()*f2(); <1>
@@ -94,7 +94,7 @@ int j = 0;
 cout << i << " "<< ++i <<endl; <2>
 ----
 <1> f1和f2一定会在执行乘法之前被调用，但是无法知道f1和f2谁先调用
-<2> 程序是未定义的，因为无法推断其行为：编译器可能先求+\+i的值再求i的值，此时输出1 1，也可能先求i的值再求++i的值，输出结果为0 1
+<2> 程序是未定义的，因为无法推断其行为: 编译器可能先求+\+i的值再求i的值，此时输出1 1，也可能先求i的值再求++i的值，输出结果为0 1
 
 
 # 算术运算符
@@ -271,3 +271,56 @@ while(it != s.end() && !isspace(*it)){
 *(it+1) = toupper(*it);   //如果先求右侧的值
 ----
 
+# 成员访问运算符
+
+* 点运算符: 获取类对象的一个成员。
+* 箭头运算符: _ptr->mem_ 等价于 _(*ptr).mem_ .
+[source,c++]
+----
+string s1 = "a string", *p = &s1;
+auto n = s1.size();
+n = (*p).size();
+n = p->size();
+
+n = *p.size();     <1> //错误: p是一个指针，无size的成员
+----
+
+<1> 解引用运算符的优先级低于点运算符。
+
+
+# 位运算符
+
+* 位运算符作用于整数类型（short,int,long,long long）的运算对象，并把运算对象看成是二进制位的集合。
+* 移位运算符: expr1 _op_ expr2 , expr1的内容按照expr2的移动指定位数。
+
+image::img/table4-3.png[alt=table, width=1187,align=center]
+
+WARNING: 左移操作可能会改变符号位的值，导致未定义的行为。所以，强烈建议仅将位运算用于处理无符号类型。
+
+
+# sizeof运算符
+
+* sizeof运算符返回一个类型名字或一条表达式所占的字节数。满足右结合律，结果为size_t类型值。sizeof并不实际计算其运算对象的值。
+** sizeof(type)
+** sizeof expr    
+* 对引用类型执行sizeof运算得到被引用对象所占空间的大小
+* 对数组执行sizeof运算得到整个数组所占空间的大小，sizeof运算不会把数组转换成指针来处理。
+* 对string或vector对象执行sizeof运算只能返回该类型固定部分的大小，而不会计算对象中的元素占用了多少空间。 
+
+[source,c++]
+----
+Sales_Data data, *p;
+sizeof(Sales_Data);
+sizeof data;
+sizeof p;
+sizeof *p;    <1> //sizeof满足右结合律，且与解引用运算符优先级一样，所以表达式按照从右向左的顺序组合。
+sizeof data.revenue;   
+sizeof Sales_Data::revenue;     <2>
+
+int ia[5] = {1,2,3,4};
+constexpr size_t sz = sizeof(ia)/sizeof(*ia);
+int arr2[sz];
+----
+
+<1> sizeof并不实际计算其运算对象的值。所以在sizeof的运算对象中解引用一个无效指针仍然是一种安全的行为，指针实际上没有真正使用。
+<2> 使用作用域运算符来获取类成员大小。
