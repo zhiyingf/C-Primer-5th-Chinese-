@@ -1,4 +1,16 @@
 = 第六章  函数
+ifdef::env-github[]
+:imagesdir:
+ https://gist.githubusercontent.com/path/to/gist/revision/dir/with/all/images
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+ifndef::env-github[]
+:imagesdir: ./
+endif::[]
 :toc:
 :toc-placement!:
 
@@ -12,7 +24,7 @@ toc::[]
 
 *调用运算符*: 执行函数。调用运算符的形式是一对圆括号，作用于一个表达式（函数或指向函数的指针），圆括号内是实参列表（argument list）。
 
-*函数的调用* 完成两项工作：
+*函数的调用* 完成两项工作:
 
  . 实参初始化形参（需要一一对应初始化，实参是形参的初始值，需要类型匹配）
  . 将控制权转移给被调用函数
@@ -256,7 +268,15 @@ void main(){
 }
 ----
 
-*省略符形参*
+*省略符形参* 是为了方便C++程序访问某些特殊的C语言代码而设置的，这些代码使用了名为 `varargs` 的C标准库功能
+
+[source,c++]
+----
+//省略符形参只能出现在形参列表的最后一个位置，其形式无外乎以下两种
+void foo(parm_list, ...);
+void foo(...);
+----
+
 
 # 返回类型和return语句
 
@@ -313,6 +333,9 @@ int main(){
 ----
 
 * 列表初始化返回值: 函数可以返回括号包围的值的列表，如果列表为空，临时量执行值初始化
+* 主函数 `main` 的返回值: 只允许 `main` 函数没有 `return` 语句直接结束
+** 如果控制到达了 `main` 函数结尾处而没有 `return` 语句，编译器将隐式地插入一条返回0的 `return` 语句
+** `main` 函数的返回值可以看作是状态指示器。返回0表示执行成功，返回其他值表示执行失败，其中非0值的含义依机器而定。为了返回值与机器无关，`cstdlib` 头文件定义了两个预处理变量(`EXIT_FAILURE` 和 `EXIT_SUCCESS`)
 * 递归函数: 函数调用自身
 
 [source,c++]
@@ -321,9 +344,14 @@ int factorial(int val){
     if(val>1) return factorial(val-1)*val;
     else return 1;
 }
+
+//factorial(val--); 将会永远传入相同的值来调用该函数，递归将永远不会结束——递归循环(recursive function)
 ----
 
+WARNING: `main` 函数不能调用自身
+
 ## 返回数组指针
+
 
 # 函数重载
 
