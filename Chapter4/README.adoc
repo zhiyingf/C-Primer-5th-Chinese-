@@ -271,6 +271,7 @@ while(it != s.end() && !isspace(*it)){
 *(it+1) = toupper(*it);   //如果先求右侧的值
 ----
 
+
 # 成员访问运算符
 
 * 点运算符: 获取类对象的一个成员。
@@ -300,7 +301,7 @@ WARNING: 左移操作可能会改变符号位的值，导致未定义的行为�
 
 # `sizeof` 运算符
 
-* `sizeof` 运算符返回一个类型名字或一条表达式所占的字节数。满足右结合律，结果为 `size_t` ( `unsigned long long` )类型值。`sizeof` 并不实际计算其运算对象的值。
+* `sizeof` 运算符返回一个类型名字或一条表达式所占的字节数。满足右结合律，结果为 `size_t` (一般是 `unsigned long long` )类型值。`sizeof` 并不实际计算其运算对象的值。
 ** `sizeof(type)`
 ** `sizeof expr`    
 * 对引用类型执行 `sizeof` 运算得到被引用对象所占空间的大小。
@@ -324,9 +325,11 @@ int arr2[sz];
 <1> `sizeof` 并不实际计算其运算对象的值。所以在 `sizeof` 的运算对象中解引用一个无效指针仍然是一种安全的行为，指针实际上没有真正使用。
 <2> 使用作用域运算符来获取类成员大小。
 
+
 # 逗号运算符
 
 逗号运算符（comma operator）含有两个运算对象，按照从左往右的顺序一次求值。首先对左侧的表达式求值，然后将求值结果丢弃。逗号运算符真正的结果是右侧表达式的值。如果右侧运算对象是左值，那么最终结果也是左值。
+
 [source,c++]
 ----
 //以下代码虽然意义不大，但是挺有趣，需要考虑重载运算符的优先级，逗号运算符的本质
@@ -334,6 +337,7 @@ char* c;
 cout << sizeof(c), sizeof(*c);
 cout << (sizeof(c), sizeof(*c)) << endl;
 ----
+
 
 # 类型转换
 
@@ -383,6 +387,7 @@ const int *p = &i;
 int &r = j, *q = p; //错误: 不允许const转换成非常量
 ----
 
+
 * 类类型定义的转换: 类类型能定义由编译器自动执行的转换，不过编译器每次只能执行一种类类型的转换
 
 [source,c++]
@@ -391,7 +396,8 @@ string s,t="a value";   //字符串字面值转换成string类型
 while(cin>>s)           //while的条件部分把cin转换成布尔值
 ----
 
-## 显示类型转换
+
+## 显式类型转换
 
 * 命名的强制类型转换 `cast-name<type>(expression);` ，`type`是转换的目标类型，`expression`是要转换的值。如果 `type` 是引用类型，则结果是左值。`cast-name`是 `static_cast`、`dynamic_cast`、`const_cast`和 `reinterpret_cast` 中的一种，指定了要执行的是哪种转换。
 ** `static_cast` : 任何具有明确定义的类型转换，只要不包含底层 `const`，就可以使用 `static_cast`
@@ -436,11 +442,12 @@ string str(pc);
 cout<<str<<endl;                         //output: a  (i为ascii码时，输出有意义)
 ----
 
-CAUTION: 建议避免强制类型转换。因为强制类型转换干扰了正常的类型检查，尤其是reinterpret_cast
+CAUTION: 建议避免强制类型转换。因为强制类型转换干扰了正常的类型检查，尤其是 `reinterpret_cast`
 
 * 旧式的强制类型转换: 一句话——类型转换比较笼统
 ** `type (expr);` 函数形式的强制类型转换
 ** `(type) expr;` C语言风格的强制类型转换
+
 
 # 运算符优先级表
 image::img/table4-4.png[alt=table, width=915,align=center]
