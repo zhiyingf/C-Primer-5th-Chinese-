@@ -16,4 +16,182 @@ endif::[]
 
 toc::[]
 
+
 # 定义抽象数据类型
+
+* 类的基本思想是 *数据抽象*（data abstraction）和 *封装*（encapsulation）。
+
+** 数据抽象是一种依赖于 *接口*（interface）和 *实现*（implementation）分离的编程（以及设计）技术。类的接口包括用户所能执行的操作；类的实现则包括类的数据成员、负责接口实现的函数体以及定义类所需要的各种私有函数。
+** 封装实现了类的接口和实现的分离。封装后的类隐藏了它的实现细节，即类的用户只能使用接口而无法访问实现部分。
+* 类想要实现数据抽象和封装，首先需要定义一个 *抽象数据类型*（abstract data type）。
+
+## 类的成员
+
+* 必须在类的内部声明，不能在其他地方增加成员。
+* 成员可以是数据，函数，类型别名。
+
+
+## 类的成员函数
+
+* *成员函数的声明必须在类的内部*，其定义可以在类的内部或外部；作为接口的 *非成员函数的定义和声明都在类的外部*。
+
+[NOTE]
+====
+定义在类内部的函数是隐式的 `inline` 函数。
+====
+
+[source,c++]
+----
+//定义改进的Sales_data类
+struct Sales_data {
+	// operations on Sales_data objects
+	std::string isbn() const { return bookNo; }
+	Sales_data& combine(const Sales_data&);
+	double avg_price() const;
+
+    // class member
+	std::string bookNo;
+	unsigned units_sold = 0;
+	double revenue = 0.0;
+};
+
+// nonmember Sales_data interface functions
+Sales_data add(const Sales_data&, const Sales_data&);
+std::ostream &print(std::ostream&, const Sales_data&);
+std::istream &read(std::istream&, Sales_data&);
+
+
+///this 常量指针
+total.isbn();
+Sales_data::isbn(&total);   //伪代码，用于说明调用成员函数的实际执行过程
+
+//任何对类成员的直接访问都被看做this的隐式引用
+return bookNo;              //等价于 return this->bookNo;
+
+
+///定义一个返回this对象的函数
+// add the value of the given Sales_data into this object
+Sales_data& Sales_data::combine(const Sales_data &rhs)
+{
+	units_sold += rhs.units_sold; // add the members of rhs into 
+	revenue += rhs.revenue;       // the members of ``this'' object
+	return *this; // return the object on which the function was called
+}
+----
+
+* *`this` 常量指针*
+** `this` 总是指向当前对象，所以 `this` 是一个常量指针
+** 每个成员函数都有一个额外的隐式定义的形参 `this`，成员函数可以通过 `this` 来访问调用它的那个对象以及相应成员
+*** 当调用一个成员函数时，用请求该函数的对象地址初始化 `this`
+*** 例如，如果调用 `total.isbn()` ，则编译器负责将 `total` 的地址传递给 `isbn` 的隐式形参 `this`
+*** 任何对类成员的直接访问都被看做 `this` 的隐式引用
+** `return *this;` 返回调用该函数的对象
+
+* *`const` 成员函数*: `std::string isbn() const { return bookNo; }` 称为 *常量成员函数*（const member function）
+** 紧跟形参列表的 `const` 表示 `this`是一个指向常量的指针
+*** 普通的非 `const` 成员函数: `this` 是指向类类型的 `const` 指针（可以改变 `this` 所指向的值，不能改变 `this` 保存的地址）
+*** `const` 成员函数: `this` 是指向 `const` 类类型的 `const` 指针（既不能改变 `this` 所指向的值，也不能改变 `this` 保存的地址）
+*** 即 `const` 作用是修改隐式 `this` 指针的类型: 从指向非常量类类型对象的常量指针，修改为指向常量对象的常量指针
+
+
+[NOTE]
+====
+常量对象，以及常量对象的引用或指针都只能调用常量成员函数。
+究其原因，形参初始化同样需要遵循初始化规则，不能将指向非常量的指针 `this` （形参）*绑定* 到一个常量对象（实参）上，所以不能在一个常量对象上调用普通成员函数。（常量对象的 `this` 是一个指向常量对象的指针，当调用普通成员函数时，会将指向常量对象的指针 *初始化* 指向非常量的指针，违背了初始化规则。）
+====
+
+## 定义类的非成员函数
+
+* 如果非成员函数是类接口的组成部分，则这些函数说明应该与类在同一个头文件中
+* `read` 和 `print` 分别接受一个IO类型的引用作为参数，因为IO类属于不能拷贝类型，只能通过引用传递，所以形参和返回类型都是引用。而且，因为读取和写入操作会改变流的内容，所以都是普通引用，而非常量引用。
+
+[source,c++]
+----
+Sales_data add(const Sales_data &lhs, const Sales_data &rhs) 
+{
+	Sales_data sum = lhs;  // copy data members from lhs into sum
+	sum.combine(rhs);      // add data members from rhs into sum
+	return sum;
+}
+
+// transactions contain ISBN, number of copies sold, and sales price
+std::istream& read(std::istream &is, Sales_data &item)        //实参std::cin 
+{
+	double price = 0;
+	is >> item.bookNo >> item.units_sold >> price;
+	item.revenue = price * item.units_sold;
+	return is;
+}
+
+std::ostream& print(std::ostream &os, const Sales_data &item) //实参std::cout   
+{
+	os << item.isbn() << " " << item.units_sold << " " 
+	   << item.revenue << " " << item.avg_price();
+	return os;
+}
+----
+
+## 构造函数
+
+* 每个类都分别定义了它的对象被初始化的方式，类通过一个或几个特殊成员函数来控制对象的初始化过程——*构造函数*（constructor），没有返回值，与类同名，可重载
+* 构造函数不能声明为 `const`
+* 编译器构建的构造函数——*合成的默认构造函数*（synthesized default constructor），某些类不能依赖合成的默认构造函数: 
+** 只有当类没有声明任何构造函数时，编译器才会自动地生成默认构造函数
+** 如果定义在块中的内置类型或者复合类型（比如数组和指针）的对象被默认初始化时，则它们的值将是未定义的。这同样适用于默认初始化的内置类型成员。如果类包含有内置类型或者复合类型的成员时，则只有当这些成员全部都赋予了类内的初始值时，这个类才适用于使用合成的默认构造函数
+** 有时编译器不能为某些类合成默认的构造函数，例如，如果类中包含了一个其他类类型的成员且这个成员的类型没有默认构造函数，那么该编译器无法初始化该成员
+
+[source,c++]
+----
+//定义Sales_data的构造函数
+struct Sales_data {
+    //新增的构造函数
+    Sales_data() = default;                                     <1>
+    Sales_data(const std::string &s): bookNo(s){}
+    Sales_data(const std::string &s, unsigned n, double p):     <2>
+	           bookNo(s), units_sold(n), revenue(p*n) { }
+	Sales_data(std::istream &);
+
+	// operations on Sales_data objects
+	std::string isbn() const { return bookNo; }
+	Sales_data& combine(const Sales_data&);
+	double avg_price() const;
+
+    // class member
+	std::string bookNo;
+	unsigned units_sold = 0;    //类内初始值
+	double revenue = 0.0;       //类内初始值
+};
+
+//在类的外部定义构造函数
+Sales_data::Sales_data(std::istream &is) 
+{
+	// read will read a transaction from is into this object
+	read(is, *this);
+}
+----
+
+<1> *`= default` 含义*: 要求编译器生成默认的构造函数，`= default` 在类的内部，则默认构造函数是内联的。该默认函数之所以有效，是因为为内置类型的数据成员提供了初始值
+<2> *构造函数初始值列表*: 冒号以及冒号和花括号之间的代码
+
+
+# 访问控制与封装
+
+
+
+# 类的其他特性
+
+
+
+# 类的作用域
+
+
+
+# 构造函数再探
+
+
+
+# 类的静态成员
+
+
+
+
