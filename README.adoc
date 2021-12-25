@@ -50,8 +50,8 @@ toc::[]
 
 * 第13章 : 拷贝控制
 * 第14章 : 重载与类型转换 link:Chapter14/README.adoc[笔记]
-* 第15章 : 面向对象程序设计
-* 第16章 : 模版与泛型编程
+* 第15章 : 面向对象程序设计 link:Chapter15/README.adoc[笔记]
+* 第16章 : 模版与泛型编程 link:Chapter16/README.adoc[笔记]
 
 ## 第 IV 部分 : 高级主题
 
