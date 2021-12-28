@@ -65,3 +65,79 @@ data1.operator+=(data2);
 ** 改变对象状态的运算符或者与给定类型密切相关的运算符，如递增(`++`)、递减(`--`)和解引用运算符(`*`)，应该是成员运算符
 ** 具有对称性的运算符可能转换任意一端的运算对象，应该设置为普通的非成员函数
 
+# 输入和输出运算符(定义类的IO操作)
+
+## 重载输出运算符 `<<`
+
+* 第一个形参通常是一个非常量的ostream对象的引用。非常量是因为向流中写入会改变其状态；而引用是因为我们无法复制一个 `ostream` 对象
+* IO运算符必须是非成员函数，一般被声明为友元 `friend`
+
+## 重载输入运算符 `>>`
+
+* 第一个形参通常是运算符将要读取的流的引用，第二个形参是将要读取到的（非常量）对象的引用
+* 输入运算符必须处理输入可能失败的情况，而输出运算符不需要
+
+* 输入时错误
+** 当流含有错误类型的数据时读取操作可能失败
+** 当读取操作到达文件末尾或者遇到输入流的其他错误时也会失败
+
+[source,c++]
+----
+class Sales_data{
+    //... ...
+    friend std::istream& operator>>(std::istream&, Sales_data&);
+	friend std::ostream& operator<<(std::ostream&, const Sales_data&);
+    //... ...
+}
+
+std::ostream& operator<<(std::ostream &out, const Sales_data &item)
+{
+	out << item.isbn() << " " << item.units_sold << " " << item.revenue << " " << item.avg_price();
+	return out;
+}
+
+istream &operator>>(istream &is, Sales_data &item)
+{
+	double price;  // no need to initialize; we'll read into price before we use it
+    //如果读取失败，price未定义
+	is >> item.bookNo >> item.units_sold >> price;
+	if (is)        // check that the inputs succeeded
+    	item.revenue = item.units_sold * price;
+	else
+    	item = Sales_data(); // input failed: give the object the default state
+	return is;
+}
+
+//test
+std::cout << book << std::endl;
+----
+
+# 算术和关系运算符
+
+* 把算术和关系运算符定义成非成员函数以允许对左侧或右侧的运算对象进行转换，形参都是常量的引用
+* 如果类同时定义了算数运算符和相关的复合赋值运算符，则通常情况下应该使用复合赋值来实现算数运算符
+
+# 赋值运算符
+
+
+
+# 下标运算符
+
+
+
+# 递增和递减运算符
+
+
+
+# 成员访问运算符
+
+
+
+# 函数调用运算符
+
+
+# 重载、类型转换与运算符
+
+
+
+
