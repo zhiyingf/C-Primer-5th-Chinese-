@@ -399,7 +399,7 @@ while(cin>>s)           //while的条件部分把cin转换成布尔值
 
 ## 显式类型转换
 
-* 命名的强制类型转换 `cast-name<type>(expression);` ，`type`是转换的目标类型，`expression`是要转换的值。如果 `type` 是引用类型，则结果是左值。`cast-name`是 `static_cast`、`dynamic_cast`、`const_cast`和 `reinterpret_cast` 中的一种，指定了要执行的是哪种转换。
+* 命名的强制类型转换 `cast-name<type>(expression);` ，`type` 是转换的目标类型，`expression` 是要转换的值。如果 `type` 是引用类型，则结果是左值。`cast-name` 是 `static_cast`、`dynamic_cast`、`const_cast`和 `reinterpret_cast` 中的一种，指定了要执行的是哪种转换。
 ** `static_cast` : 任何具有明确定义的类型转换，只要不包含底层 `const`，就可以使用 `static_cast`
 ** `const_cast`: 只能改变运算对象的底层 `const`——去掉 `const` 性质（cast away the const），常用于有函数重载的上下文中
 *** 若对象本身不是一个常量，使用强制类型转换获得写权力是合法行为
